@@ -1,0 +1,46 @@
+name: Fibonacci CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build_type: [RelWithDebInfo]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake valgrind bat clang-20
+          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-20 100
+
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_COMPILER=clang++
+
+      - name: Build all targets (parallel)
+        run: cmake --build build --parallel
+
+      - name: Output source code with batcat
+        run: |
+          find examples -name '*.cpp' -o -name '*.hpp' | xargs batcat --style=plain --color=always
+
+      - name: Run executables with callgrind
+        run: |
+          for exe in main_recursive main_iterative main_dp main_optimized main_matrix main_binet main_fast_doubling main_generator; do
+            valgrind --tool=callgrind ./build/$exe 20
+          done
+
+      - name: Annotate callgrind output
+        run: |
+          for out in build/callgrind.out.*; do
+            echo "\n=== Annotated output for $out ==="
+            callgrind_annotate $out
+          done
