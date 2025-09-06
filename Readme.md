@@ -131,8 +131,6 @@ Das Programm zeigt eine effiziente Cache-Nutzung und eine moderate Anzahl an Spr
 <h4>Rekursiver Algorithmus:</h4>
 
 ```cpp
-#include "fibonacci/fibonacci_recursive.hpp"
-
 uint64_t fibonacci_recursive(uint8_t n) {
     if (n <= 1) {
         return n;
@@ -142,19 +140,23 @@ uint64_t fibonacci_recursive(uint8_t n) {
 ```
 
 <details>
+<summary>Arbeitsweise</summary>
+
+  - Berechnet Fibonacci-Zahlen durch direkte Rekursion.
+  - Jeder Aufruf teilt das Problem in zwei kleinere Teilprobleme auf.
+
+</details>
+<details>
 <summary>Eigenschaften:</summary>
 
-  - Einfach und elegant, aber ineffizient für große n.
-  - Zeitkomplexität: O(2^n), Platzkomplexität: O(n) durch den Aufruf-Stack.
+  - Zeitkomplexität: O(2^n) (Exponentiell, da viele Aufrufe redundant sind).
+  - Platzkomplexität: O(n) (Aufgrund des Aufruf-Stacks).
 
 </details>
 
 <h4>Dynamische Programmierung:</h4>
 
 ```cpp
-#include "fibonacci/fibonacci_dp.hpp"
-#include <vector>
-
 uint64_t fibonacci_dp(uint8_t n) {
     if (n <= 1) {
         return n;
@@ -170,18 +172,22 @@ uint64_t fibonacci_dp(uint8_t n) {
 ```
 
 <details>
+<summary>Arbeitsweise</summary>
+
+  - Verwendet einen Vector, um bereits berechnete Fibonacci-Zahlen zu speichern.
+
+</details>
+<details>
 <summary>Eigenschaften:</summary>
 
-  - Verwendet ein Array, um zuvor berechnete Werte zu speichern.
-  - Zeitkomplexität: O(n), Platzkomplexität: O(n).
+  - Zeitkomplexität: O(n) (Linear, da jede Zahl einmal berechnet wird).
+  - Platzkomplexität: O(n) (Aufgrund des Vektors).
 
 </details>
 
 <h4>Iterativer Ansatz I:</h4>
 
 ```cpp
-#include "fibonacci/fibonacci_iterative_I.hpp"
-
 uint64_t fibonacci_iterative_I(uint8_t n) {
     if (n <= 1) {
         return n;
@@ -198,27 +204,31 @@ uint64_t fibonacci_iterative_I(uint8_t n) {
 ```
 
 <details>
-<summary>Eigenschaften:</summary>
+<summary>Arbeitsweise</summary>
 
   - Verwendet eine Schleife zur iterativen Berechnung.
-  - Benötigt konstanten Speicher.
-  - Zeitkomplexität: O(n), Platzkomplexität: O(1).
+
+</details>
+<details>
+<summary>Komplexität:</summary>
+
+  - Zeitkomplexität: O(n) (Linear, da jede Zahl einmal berechnet wird).
+  - Platzkomplexität: O(1) 
 
 </details>
 
 <h4>Iterativer Ansatz II:</h4>
 
 ```cpp
-#include "fibonacci/fibonacci_iterative_II.hpp"
-#include <utility>
-
 uint64_t fibonacci_iterative_II(uint8_t n) {
-    if (n <= 1) {
+    if (n <= 1)
+    {
         return n;
     }
     uint64_t prev = 0;
     uint64_t curr = 1;
-    for (uint8_t i = 2; i <= n; ++i) {
+    for (uint8_t i = 2; i <= n; ++i)
+    {
         prev = std::exchange(curr, prev + curr);
     }
     return curr;
@@ -226,19 +236,22 @@ uint64_t fibonacci_iterative_II(uint8_t n) {
 ```
 
 <details>
+<summary>Arbeitsweise</summary>
+
+  - Verwendet `std::exchange` für eine kompaktere Aktualisierung der Variablen.
+
+</details>
+<details>
 <summary>Eigenschaften:</summary>
 
-  - Ähnlich wie iterativ, aber verwendet `std::exchange` für Klarheit.
-  - Zeitkomplexität: O(n), Platzkomplexität: O(1).
+  - Zeitkomplexität: O(n) (Linear, da jede Zahl einmal berechnet wird).
+  - Platzkomplexität: O(1)
 
 </details>
 
 <h4>Matrix-Exponentiation:</h4>
 
 ```cpp
-#include "fibonacci/fibonacci_matrix.hpp"
-#include <array>
-
 using matrix_2x2 = std::array<std::array<uint64_t, 2>, 2>;
 
 static matrix_2x2 multiply(matrix_2x2 const &a, matrix_2x2 const &b) {
@@ -250,8 +263,10 @@ static matrix_2x2 multiply(matrix_2x2 const &a, matrix_2x2 const &b) {
 
 static matrix_2x2 matrix_pow(matrix_2x2 m, uint8_t n) {
     matrix_2x2 result = {{{1, 0}, {0, 1}}};
-    while (n > 0) {
-        if (n & 1) {
+    while (n > 0)
+    {
+        if (n & 1)
+        {
             result = multiply(result, m);
         }
         m = multiply(m, m);
@@ -261,7 +276,8 @@ static matrix_2x2 matrix_pow(matrix_2x2 m, uint8_t n) {
 }
 
 uint64_t fibonacci_matrix(uint8_t n) {
-    if (n <= 1) {
+    if (n <= 1)
+    {
         return n;
     }
     matrix_2x2 base = {{{1, 1}, {1, 0}}};
@@ -271,19 +287,23 @@ uint64_t fibonacci_matrix(uint8_t n) {
 ```
 
 <details>
+<summary>Arbeitsweise</summary>
+
+  - Die Fibonacci-Zahlen können durch Potenzieren der Matrix {{1,1},{1,0}} berechnet werden.
+  - F(n) ist das Element `[0][0]` der Matrix {{1,1},{1,0}}^(n-1).
+
+</details>
+<details>
 <summary>Eigenschaften:</summary>
 
-  - Verwendet Matrix-Exponentiation zur Berechnung in logarithmischer Zeit.
-  - Zeitkomplexität: O(log n), Platzkomplexität: O(1).
+  - Zeitkomplexität: O(log n) (Dank exponentieller Potenzierung).
+  - Platzkomplexität: O(1)
 
 </details>
 
 <h4>Binetsche Formel:</h4>
 
 ```cpp
-#include "fibonacci/fibonacci_binet.hpp"
-#include <cmath>
-
 uint64_t fibonacci_binet(uint8_t n) {
     static const double sqrt5 = std::sqrt(5.0);
     static const double phi = (1.0 + sqrt5) / 2.0;
@@ -291,30 +311,38 @@ uint64_t fibonacci_binet(uint8_t n) {
 }
 ```
 
+<details>Arbeitsweise</details>
+
+  - Basiert auf dem goldenen Schnitt φ = (1 + √5) / 2.
+  - Nutzt die geschlossene Formel: F(n) = (φ^n - (1-φ)^n) / √5.
+  - Führt für große n zu Rundungsfehlern, da (1-φ)^n gegen 0 geht.
+
+</details>
 <details>
 <summary>Eigenschaften:</summary>
 
-  - Verwendet die geschlossene Formel mit dem goldenen Schnitt.
-  - Zeitkomplexität: O(1), kann aber bei großen n zu Genauigkeitsproblemen führen.
+  - Zeitkomplexität: O(1)
+  - Platzkomplexität: O(1)
 
 </details>
 
 <h4>Fast Doubling:</h4>
 
 ```cpp
-#include "fibonacci/fibonacci_fast_doubling.hpp"
-#include <utility>
-
 static std::pair<uint64_t, uint64_t> fib_pair(uint8_t n) {
-    if (n == 0) {
+    if (n == 0)
+    {
         return {0, 1};
     }
     auto p = fib_pair(n >> 1);
     uint64_t c = p.first * (2 * p.second - p.first);
     uint64_t d = p.first * p.first + p.second * p.second;
-    if (n & 1) {
+    if (n & 1)
+    {
         return {d, c + d};
-    } else {
+    }
+    else
+    {
         return {c, d};
     }
 }
@@ -325,30 +353,33 @@ uint64_t fibonacci_fast_doubling(uint8_t n) {
 ```
 
 <details>
-<summary>Eigenschaften:</summary>
+<summary>Arbeitsweise</summary>
 
-  - Nutzt Eigenschaften der Fibonacci-Zahlen zur Berechnung in logarithmischer Zeit.
-  - Zeitkomplexität: O(log n), Platzkomplexität: O(1).
-  - <b>Funktionsweise:</b> Fast Doubling verwendet die mathematischen Identitäten:
+  - Verwendet die mathematischen Identitäten:
     - F(2k) = F(k) × [2F(k+1) − F(k)]
     - F(2k+1) = F(k+1)^2 + F(k)^2
-    Dadurch kann der Algorithmus F(n) durch rekursives Halbieren von n effizient berechnen und vermeidet redundante Berechnungen.
+  - Berechnet F(2k) und F(2k+1) aus F(k) und F(k+1)
+  - Reduziert die Anzahl der Berechnungen durch Halbierung von n.
+
+</details>
+<details>
+<summary>Eigenschaften:</summary>
+
+  - Zeitkomplexität: O(log n) (Dank Halbierung von n).
+  - Platzkomplexität: O(1)
 
 </details>
 
 <h4>Generator-basierter Ansatz (C++23):</h4>
 
 ```cpp
-#include "fibonacci/fibonacci_generator.hpp"
-#include <cstdint>
-#include <generator>
-
 std::generator<uint64_t> fibonacci_generator() {
     uint64_t prev = 0;
     uint64_t curr = 1;
     co_yield prev;
     co_yield curr;
-    while (true) {
+    while (true)
+    {
         auto const next = prev + curr;
         co_yield next;
         prev = curr;
@@ -360,7 +391,8 @@ uint64_t fibonacci_generator(uint8_t n) {
     auto gen = fibonacci_generator();
     auto it = gen.begin();
     uint64_t value = 0;
-    for (uint8_t i = 0; i <= n && it != gen.end(); ++i, ++it) {
+    for (uint8_t i = 0; i <= n && it != gen.end(); ++i, ++it)
+    {
         value = *it;
     }
     return value;
@@ -368,10 +400,17 @@ uint64_t fibonacci_generator(uint8_t n) {
 ```
 
 <details>
+<summary>Arbeitsweise</summary>
+
+  - Ähnlich dem iterativen Ansatz.
+  - Definiert einen Generator, der unendlich viele Fibonacci-Zahlen erzeugt.
+  - Verwendet `co_yield`, um Werte nacheinander zurückzugeben.
+
+</details>
+<details>
 <summary>Eigenschaften:</summary>
 
-  - Verwendet C++23-Generatoren für Lazy Evaluation.
-  - Effizient für das Streaming von Fibonacci-Zahlen.
-  - Zeitkomplexität: O(n), Platzkomplexität: O(1).
+  - Zeitkomplexität: O(n) (Linear, da jede Zahl einmal berechnet wird).
+  - Platzkomplexität: O(1).
 
 </details>
