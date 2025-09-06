@@ -16,9 +16,6 @@ jobs:
           chmod +x llvm.sh
           sudo ./llvm.sh 19
 
-      - name: Add Clang to PATH
-        run: echo "PATH=/usr/bin:$PATH" >> $GITHUB_ENV
-
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -38,18 +35,15 @@ jobs:
           for algo in binet dp fast_doubling generator iterative_I matrix iterative_II recursive; do
             batcat --style full --force-colorization ./examples/fibonacci/fibonacci_$algo.cpp
             valgrind --tool=callgrind --callgrind-out-file=callgrind_out_$algo.log ./build/examples/fibonacci/main_$algo 40
-            callgrind_annotate --inclusive=no callgrind_out_$algo.log
           done
 
       - name: Run main_all with valgrind
         run: |
           valgrind --tool=callgrind --callgrind-out-file=callgrind_out.log --dump-instr=yes --simulate-hwpref=yes --collect-jumps=yes --branch-sim=yes --cache-sim=yes --cacheuse=yes ./build/examples/fibonacci/main_all
-          callgrind_annotate --inclusive=no callgrind_out.log
 
       - name: Run main_all with valgrind (each algorithm separate)
         run: |
           for algo in binet dp fast_doubling generator iterative_I matrix iterative_II recursive; do
             batcat --style full --force-colorization ./examples/fibonacci/fibonacci_$algo.cpp
             valgrind --tool=callgrind --callgrind-out-file=callgrind_out_$algo.log --dump-instr=yes --simulate-hwpref=yes --collect-jumps=yes --branch-sim=yes --cache-sim=yes --cacheuse=yes ./build/examples/fibonacci/main_all
-            callgrind_annotate --inclusive=no callgrind_out_$algo.log
           done
