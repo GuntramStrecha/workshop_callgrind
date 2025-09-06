@@ -122,6 +122,7 @@ Das Programm zeigt eine effiziente Cache-Nutzung und eine moderate Anzahl an Spr
 <h2>Demonstration: Messung unterschiedlicher Fibonacci-Zahlen-Berechnungsalgorithmen</h2>
 
 <h3>Definition:</h3>
+
   - Fibonacci-Folge: 0, 1, 1, 2, 3, 5, 8, 13, ...
   - Formel: F(n) = F(n-1) + F(n-2) mit F(0) = 0, F(1) = 1.
 
