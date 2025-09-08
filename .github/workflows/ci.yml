@@ -1,0 +1,50 @@
+name: Fibonacci CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Clang and dependencies
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 19
+          sudo apt-get update
+          sudo apt-get install -y cmake valgrind bat
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_CXX_COMPILER=clang++-19
+
+      - name: Build all targets (parallel)
+        run: cmake --build build --parallel
+
+      - name: Run gprof profiling
+        run: |
+          cd build/examples/fibonacci
+          ./main_matrix_gprof 40
+          gprof ./main_matrix_gprof gmon.out
+
+      - name: Run callgrind profiling
+        run: |
+          batcat --style full --force-colorization ./examples/fibonacci/fibonacci_matrix.cpp
+          valgrind --tool=callgrind --callgrind-out-file=callgrind_out_matrix.log ./build/examples/fibonacci/main_matrix 40
+
+      - name: Run main_all with valgrind
+        run: |
+          valgrind --tool=callgrind --callgrind-out-file=callgrind_out.log --dump-instr=yes --simulate-hwpref=yes --collect-jumps=yes --branch-sim=yes --cache-sim=yes --cacheuse=yes ./build/examples/fibonacci/main_all > /dev/null
+
+      - name: Run main_all with valgrind (each algorithm separate)
+        run: |
+          for algo in binet dp fast_doubling generator iterative_I matrix iterative_II; do
+            batcat --style full --force-colorization ./examples/fibonacci/fibonacci_$algo.cpp
+            valgrind --tool=callgrind --callgrind-out-file=callgrind_out_$algo.log --instr-atstart=yes --dump-instr=yes --simulate-hwpref=yes --collect-jumps=yes --branch-sim=yes --cache-sim=yes --cacheuse=yes --collect-atstart=no --toggle-collect=fibonacci_$algo\(* ./build/examples/fibonacci/main_all > /dev/null
+          done
