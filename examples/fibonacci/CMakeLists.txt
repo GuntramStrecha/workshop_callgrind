@@ -2,14 +2,15 @@
 
 # Add all libraries and executables for Fibonacci implementations
 set(FIB_IMPLS
-    fibonacci_recursive
-    fibonacci_iterative_I
-    fibonacci_dp
-    fibonacci_iterative_II
-    fibonacci_matrix
+    fibonacci_all
     fibonacci_binet
+    fibonacci_dp
     fibonacci_fast_doubling
     fibonacci_generator
+    fibonacci_iterative_I
+    fibonacci_iterative_II
+    fibonacci_matrix
+    fibonacci_recursive
 )
 
 foreach(IMPL ${FIB_IMPLS})
@@ -35,13 +36,14 @@ add_executable(main_generator main_generator.cpp)
 target_link_libraries(main_generator fibonacci_generator)
 add_executable(main_all main_all.cpp)
 target_link_libraries(main_all
+    fibonacci_all
     fibonacci_binet
     fibonacci_dp
     fibonacci_fast_doubling
     fibonacci_generator
     fibonacci_iterative_I
-    fibonacci_matrix
     fibonacci_iterative_II
+    fibonacci_matrix
     fibonacci_recursive
 )
 
